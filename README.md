@@ -10,8 +10,6 @@ Very basic calculator for learn go and webAssembly.
 
 `cd golang-wasm-calculator`
 
-`cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" .`
-
 `GOARCH=wasm GOOS=js go build -o lib.wasm main.go`
 
 `go run server.go`
