@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Go wasm</title>
+    </head>
+
+    <body>
+        <script src="wasm_exec.js"></script>
+
+         <script>
+            if (!WebAssembly.instantiateStreaming) {
+            //polyfill
+                WebAssembly.instantiateStreaming = async (resp, importObject) => {
+                     const source = await (await resp).arrayBuffer();
+                    return await WebAssembly.instantiate(source, importObject);
+                };
+            }
+
+            const go = new Go();
+
+            let mod, inst;
+
+            WebAssembly.instantiateStreaming(fetch("lib.wasm"), go.importObject).then(
+               async  result => {
+                    mod = result.module;
+                    inst = result.instance;
+                    document.querySelector("#addButton").disabled = false;
+                    document.querySelector("#substractButton").disabled = false;
+                    await go.run(inst);
+                }
+            );
+        </script>
+
+        <input type="text" id="value1" />
+        <input type="text" id="value2" />
+
+        <button id="addButton" onclick="add()" disabled>Add</button>
+        <button id="substractButton" onclick="substract()" disabled>Substract</button>
+
+        <p id="result"></p>
+    </body>
+</html>
